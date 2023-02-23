@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Vue.js Pet Depot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+   
+
+   
+    <div id="app">
+      <div class="container">
+    <h1 class="display-5 text-center" v-text="sitename"></h1>
+    <button class="btn btn-danger" v-on:click="showCheckout">
+      {{ cartItemCount }}
+      <span class="fa-solid fa-cart-plus"></span>
+      Checkout
+    </button>
+    <main>
+      <div v-if="showProduct">
+
+        <div class="row ml-3 mt-3" >
+          <div class="col col-sm-2">
+            <h2 v-text="product.title"></h2>
+            <p v-html="product.description"></p>
+            <p> Price: {{product.price}}</p>
+            <p>Availble Stock : {{product.availableInventory}}</p>
+  
+          </div>
+          <div class="col col-sm-1">
+            <figure>
+             <img v-bind:src="product.image" height="200" width="200">
+            </figure>
+           </div>
+   
+        </div>
+
+      <input type="button" class="btn btn-primary" value="AddToCart" v-on:click="addToCart" v-if="canAddToCart" >
+      <input disabled="disabled" v-else value="AddToCart" >
+  </div>
+      
+    <div v-else>
+      <div class="container">
+
+    
+      <h2>Checkout</h2>
+
+      <div class="row"> 
+        <div class="col col-lg-6">
+          <div class="form-group">
+            <label for="">First Name</label>
+            <input v-model.tirm="order.firstName" >    
+          </div>
+    
+          <div class="form-group">
+            <label for="">Last Name</label>
+            <input v-model.tirm="order.lastName" >    
+          </div>
+    
+          <div class="form-group">
+            <label for="">Address</label>
+            <input v-model="order.address" >    
+          </div>
+        </div>
+        <div class="col col-lg-6">
+          <div class="form-group">
+            <label for="">City</label>
+            <input v-model="order.city" >    
+          </div>
+    
+          <div class="form-group">
+    
+            <select v-model="order.state">
+              <option disabled value="">State</option>
+              <option v-for="(state, key) in states" 
+                v-bind:value="state">
+                {{ key }}
+
+              </option>
+
+              </option>
+         
+            </select>
+            <div class="form-group">
+              <label for="">Zip/Postal Code</label>
+              <input v-model-number="order.zip" type="number" >    
+            </div>
+            <p>
+              <input type="checkbox" id="gift" value="true" v-model="order.gift"
+              v-bind:true-value="order.sendGift"
+              v-bind:false-value="order.dontSendGift"
+              >
+               <label for="gift">Ship As Gift</label>
+            </p>
+            <p>
+              <input type="radio" id="home" value="Home" v-model="order.method">
+              <label for="home">Home</label>
+            </p>
+            <p>
+              <input type="radio" id="buisness" value="Buisness" v-model="order.method">
+              <label for="buisness">Buisness</label>
+            </p>
+       </div>
+      </div>
+    
+
+     
+  
+          
+      </div>
+      
+   
+      <h2>Order Information</h2>
+
+      <p>First Name: {{order.firstName}}</p>
+      <p>Last Name: {{order.lastName}}</p>
+      <p>Address: {{order.address}}</p>
+      <p>City: {{order.city}}</p>
+      <p>State: {{order.state}}</p>
+      <p>Zip: {{order.zip}}</p>
+      <p>Method: {{order.method}}</p>
+      <p>Gift: {{order.gift}}</p>
+      <button v-on:click="submitForm">Place Order</button>
+    </div>
+      </div>
+    </main>
+</div>
+    <script type="text/javascript">
+    
+    var webstore = new Vue ({
+        el: '#app',
+        data: {
+            sitename:'AFTER SCHOOL HUB',
+            product:{
+               id:1001,
+               title:"Math",
+                location:"London",
+                price: 100,
+                image: "images/math.jpeg",
+                availableInventory:5,
+                
+            },
+            showProduct:true,
+            cart: [],
+            order: {
+              firstName:'',
+              lastName:'',
+              address:'',
+              city:'',
+              state:'',
+              zip:'',
+              sendGift: 'Send as a Gift',
+              dontSendGift: 'Do not send as a Gift',
+              method:'Home',
+
+
+            },
+            states:{
+              Al:'Alanta',
+              AR:'Arizona',
+              CA:'Califonia',
+              NV:'Nivada'
+            }
+
+        },
+        methods: {
+          addToCart: function (){
+            this.cart.push(this.product.id);
+            this.product.availableInventory--;
+            
+          },
+          showCheckout() {
+            this.showProduct =this.showProduct ? false : true
+          },
+          submitForm() {
+            alert('{Youre Order Submitted!')
+          }
+        },
+        computed:{
+          cartItemCount: function() {
+            return this.cart.length|| '';
+          },
+          canAddToCart: function () {
+              return this.product.availableInventory > 0
+          }
+        },
+    });
+
+    </script>
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
